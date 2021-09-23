@@ -1,25 +1,26 @@
 import imageio
-from imageio import imread, imwrite
+from imageio import imread, imwrite # It is possible using another python "picture-working" library
 import DBScanModule as DBScan
 from DBScanModule import Point
 
 def MakeScan(nameOfPicture, eps, minPts):
 
-    # Импорт изображения в трёхмерный массив
+    # Import picture in 3D array // Импорт изображения в трёхмерный массив
     img = imread('images\\' + nameOfPicture)
 
-    # Перевод из трёхмерного массива во множество (set) объектов Point,
-    # исключая белые пикселы
+    #Creating set of Points (without white points) from 3D array
+    # // Перевод из трёхмерного массива во множество (set) объектов Point, исключая белые пикселы
     points = set()  # Множество точек
     for i in range(img.shape[0]):
         for k in range(img.shape[1]):
-            # Проверка на белый пиксель
+            #Checking whiteness // Проверка на белый пиксель
             if (int(img[i, k, 0]) != 255 and int(img[i, k, 1]) != 255 and int(img[i, k, 2]) != 255):
                 points.add(Point(i, k, img[i, k, 0], img[i, k, 1], img[i, k, 2]))
 
     # DBSCAN
     DBScan.Scan(points, eps, minPts)
-    # Согласно элементам из points "разукрашиваем" массив img
+    # Painting 3D array according to labels of points
+    # // Согласно элементам из points "разукрашиваем" массив img
     for P in points:
         if P.label == 'Noise':
             img[P.x, P.y, 0] = 150
@@ -63,7 +64,8 @@ def MakeScan(nameOfPicture, eps, minPts):
         #     img[P.x, P.y, 1] = 255
         #     img[P.x, P.y, 2] = 255
 
-    # Запись в изображение
+    # Writing a picture
+    # // Запись в изображение
     imwrite(
         str('images\\{0}\\{1} Scanned (e{2} minpts{3}).png'.format(nameOfPicture[:4], nameOfPicture[:4], eps, minPts)),
         img)
