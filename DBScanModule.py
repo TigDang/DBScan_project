@@ -30,4 +30,4 @@ def Scan(DB, eps, minPTS):
                         if len(N) >= minPTS:
                             S = S | N
 
-    print('Количество кластеров = ', C)
+    print('County of clusters = ', C)
